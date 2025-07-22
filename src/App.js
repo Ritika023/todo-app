@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './App.css';
 
 function App() {
   const [task, setTask] = useState('');
@@ -6,27 +7,46 @@ function App() {
 
   const addTask = () => {
     if (task.trim()) {
-      setTasks([...tasks, task]);
+      setTasks([...tasks, { text: task, done: false }]);
       setTask('');
     }
   };
 
-  return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h2>Simple To-Do List</h2>
-      <input
-        type="text"
-        placeholder="Enter a task"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-      />
-      <button onClick={addTask} style={{ marginLeft: '10px' }}>
-        Add Task
-      </button>
+  const toggleDone = (index) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index].done = !updatedTasks[index].done;
+    setTasks(updatedTasks);
+  };
 
-      <ul style={{ marginTop: '20px' }}>
-        {tasks.map((t, index) => (
-          <li key={index}>{t}</li>
+  const deleteTask = (index) => {
+    setTasks(tasks.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="container">
+      <h2>To-Do List</h2>
+
+      <div className="input-group">
+        <input
+          type="text"
+          placeholder="Add a new task"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+        />
+        <button onClick={addTask}>Add</button>
+      </div>
+
+      <ul>
+        {tasks.map((t, i) => (
+          <li key={i}>
+            <span className={t.done ? 'done' : ''}>{t.text}</span>
+            <div className="buttons">
+              <button onClick={() => toggleDone(i)}>
+                {t.done ? 'Undo' : 'Done'}
+              </button>
+              <button onClick={() => deleteTask(i)}>Delete</button>
+            </div>
+          </li>
         ))}
       </ul>
     </div>
